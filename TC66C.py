@@ -24,7 +24,7 @@
 import serial,argparse,math,struct,sys
 from Crypto.Cipher import AES
 from collections import namedtuple
-from time import sleep,time,localtime,strftime,perf_counter
+from time import sleep,time,localtime,strftime,monotonic
 
 
 parser = argparse.ArgumentParser()
@@ -239,9 +239,9 @@ if __name__ == "__main__":
 			f = open(out_name,'w')
 			f.write('Rec,Volt[V],Current[A]\n')
 			for i,e in enumerate(rd):
-				f.write('{:4n},{:07.4f},{:07.5f}\n'.format(i,e.Volt, e.Current))
+				f.write('{:4n},{:07.4f},{:07.5f}\n'.format(i+1,e.Volt, e.Current))
 			f.close()
-			print(str(len(rd)+1)+' records written')
+			print(str(len(rd))+' records written')
 	else:
 		f = open(out_name,'w')
 		if arg.all:
@@ -251,11 +251,11 @@ if __name__ == "__main__":
 		else:
 			f.write('Time[S],Volt[V],Current[A],Power[W]\n')
 		
-		start = perf_counter()
-		now = perf_counter()-start
+		start = monotonic()
+		now = monotonic()-start
 		try:			
 			while True:
-				now = perf_counter()-start
+				now = monotonic()-start
 				pd = TC66.Poll()
 				s = '{:5.1f},{:07.4f},{:07.5f},{:07.4f}'.format(
 					now,
@@ -276,7 +276,7 @@ if __name__ == "__main__":
 				else:
 					f.write(s+'\n')
 				print(s)
-				elapsed = (perf_counter()-start) - now
+				elapsed = (monotonic()-start) - now
 				if elapsed < arg.int_time:
 					sleep(arg.int_time - elapsed)
 		except KeyboardInterrupt:
