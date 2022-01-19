@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #MIT License
 #
-#Copyright (c) 2021 TheHWcave
+#Copyright (c) 2022 TheHWcave
 #
 #Permission is hereby granted, free of charge, to any person obtaining a copy
 #of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,9 @@
 #LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
+
+#
+# 19-Jan-2022: fixed error that resistance is reported in 0.1 Ohm units, not 0.01 Ohm 
 #
 import serial,argparse,math,struct,sys
 from Crypto.Cipher import AES
@@ -124,7 +127,7 @@ class TC66C:
 		PAC1_CSUM = 15	# checksum for pac1
 		
 		PAC2_ID   = 0 	# 'pac2'
-		PAC2_RES  = 1 	# resistance in 10 milli ohm
+		PAC2_RES  = 1 	# resistance in 0.1 ohm
 		PAC2_G0mAh= 2	# group 0 mAh
 		PAC2_G0mWh= 3	# group 0 mWh
 		PAC2_G1mAh= 4	# group 1 mAh
@@ -159,7 +162,7 @@ class TC66C:
 			Volt		= float(pac1[PAC1_VOLT])*1E-4,
 			Current	= float(pac1[PAC1_AMPS])*1E-5,
 			Power		= float(pac1[PAC1_PWR])*1E-4,
-			Resistance	= float(pac2[PAC2_RES])*1E-2,
+			Resistance	= float(pac2[PAC2_RES])*1E-1,
 			G0_mAh		= pac2[PAC2_G0mAh],
 			G0_mWh		= pac2[PAC2_G0mWh],
 			G1_mAh		= pac2[PAC2_G1mAh],
